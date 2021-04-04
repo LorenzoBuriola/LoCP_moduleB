@@ -23,6 +23,7 @@ class RBM(object):
         self.beta = beta
         self.beta_h = beta_h
         self.vmin = vmin
+        self.dw_history = []
         if random_state:
             np.random.seed(random_state)
     
@@ -92,6 +93,7 @@ class RBM(object):
     
     def _update_w(self, vh_data, vh_model, C):
         dw = C*(vh_data-vh_model)
+        self.dw_history.append((dw**2).sum()/(self.L*self.M))
         self.w += dw
 
     def _update_a(self, v_data, v_model, C):
