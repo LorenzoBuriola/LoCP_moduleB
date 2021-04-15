@@ -83,6 +83,23 @@ class RBM(object):
                     break
         return count/N
     
+    def predict(self, v, seq, beta = 1, beta_h=1):
+        L = v.shape[1]
+        N = v.shape[0]
+        GAP = v[0].max() - v[0].min()
+        vmin = -GAP +1
+        v1 = np.full((N, L), vmin)
+        for n in range(N):
+            h = self.activate(v[n],self.w, self.b, GAP, beta_h)
+            v1[n] = self.activate(h, self.w.T, self.a, GAP, beta)
+        y = np.zeros(N) - 1 
+        for n in range(N):
+            for i in range(len(seq)):
+                if (v1[n] == seq[i]).all():
+                    y[n] = i
+                    break
+        return y
+    
     def compare(self, v, v_c, beta = 1, beta_h=1):
         L = v.shape[1]
         N = v.shape[0]
